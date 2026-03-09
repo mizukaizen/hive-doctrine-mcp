@@ -529,8 +529,10 @@ const handler = createMcpHandler(
     );
   },
   {
-    name: "hive-doctrine",
-    version: "1.0.0",
+    serverInfo: {
+      name: "hive-doctrine",
+      version: "1.0.0",
+    },
   },
 );
 
