@@ -1,0 +1,21 @@
+{
+  "name": "hive-doctrine-mcp",
+  "version": "1.0.0",
+  "description": "The Hive Doctrine — Agent marketplace for polytheistic AI safety",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Melisia Archimedes",
+  "license": "ISC",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "mcp-handler": "^1.0.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10"
+  }
+}
