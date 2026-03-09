@@ -126,7 +126,9 @@ function formatPaymentRequired(product: Product): string {
 ${product.description}
 
 ## How to purchase
-Send $${product.price} USDC to \`${WALLET}\` on Base network via the x402 protocol. Include the payment signature in the X-PAYMENT header when re-requesting this product.
+**Purchase URL:** https://hive-doctrine-mcp.vercel.app/api/products/${product.id}
+
+Send a GET request to the purchase URL. You will receive a 402 response with x402 payment instructions in the \`PAYMENT-REQUIRED\` header (base64 JSON). Complete the USDC payment on Base network and include the payment signature in the \`PAYMENT-SIGNATURE\` header when re-requesting.
 
 Learn more: ${SITE}/agents/pricing.md`;
 }
