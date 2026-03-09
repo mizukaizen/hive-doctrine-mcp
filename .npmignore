@@ -1,6 +1,5 @@
-node_modules/
 .vercel/
 .env
 .env.local
-dist/
 .mcpregistry_*
+.DS_Store

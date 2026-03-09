@@ -1,15 +1,20 @@
 {
   "name": "hive-doctrine-mcp",
-  "version": "1.0.0",
-  "description": "The Hive Doctrine — Agent marketplace for polytheistic AI safety",
+  "version": "1.0.2",
+  "description": "Agent knowledge marketplace. 105 products, 6 MCP tools, x402 payments. By Melisia Archimedes.",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": ["mcp", "mcp-server", "ai-safety", "agent-marketplace", "x402", "knowledge-marketplace"],
   "author": "Melisia Archimedes",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mizukaizen/hive-doctrine-mcp"
+  },
+  "homepage": "https://hivedoctrine.com",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
     "@vercel/node": "^5.6.11",
