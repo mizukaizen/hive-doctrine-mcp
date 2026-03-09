@@ -1,19 +1,19 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.mizukaizen/hive-doctrine-mcp",
-  "description": "Agent knowledge marketplace for polytheistic AI safety. 105 products covering memory, security, governance, personas, infrastructure. Free alignment principles. Premium content via x402 USDC on Base. 6 tools: browse_catalogue, get_product, get_alignment, get_constitution_template, search_knowledge, subscribe_newsletter.",
+  "description": "Agent knowledge marketplace. 105 products, 6 MCP tools, x402 payments on Base network.",
   "repository": {
     "url": "https://github.com/mizukaizen/hive-doctrine-mcp",
     "source": "github"
   },
-  "version": "1.0.0",
+  "version": "1.0.3",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "hive-doctrine-mcp",
-      "version": "1.0.0",
+      "version": "1.0.3",
       "transport": {
-        "type": "streamableHttp",
+        "type": "streamable-http",
         "url": "https://hive-doctrine-mcp.vercel.app/mcp"
       }
     }

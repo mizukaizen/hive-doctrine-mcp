@@ -1,6 +1,7 @@
 {
   "name": "hive-doctrine-mcp",
-  "version": "1.0.2",
+  "mcpName": "io.github.mizukaizen/hive-doctrine-mcp",
+  "version": "1.0.3",
   "description": "Agent knowledge marketplace. 105 products, 6 MCP tools, x402 payments. By Melisia Archimedes.",
   "main": "index.js",
   "type": "module",
