@@ -61,6 +61,45 @@
     },
     "api/services/deploy-planner.ts": {
       "maxDuration": 15
+    },
+    "api/terms.ts": {
+      "maxDuration": 5
+    },
+    "api/services/fact-check.ts": {
+      "maxDuration": 15
+    },
+    "api/services/hallucination-check.ts": {
+      "maxDuration": 30
+    },
+    "api/services/schema-validator.ts": {
+      "maxDuration": 15
+    },
+    "api/services/anti-scam-check.ts": {
+      "maxDuration": 15
+    },
+    "api/services/context-optimizer.ts": {
+      "maxDuration": 15
+    },
+    "api/services/jurisdiction-check.ts": {
+      "maxDuration": 15
+    },
+    "api/services/kill-switch.ts": {
+      "maxDuration": 15
+    },
+    "api/services/api-to-mcp.ts": {
+      "maxDuration": 60
+    },
+    "api/services/vibe-audit.ts": {
+      "maxDuration": 30
+    },
+    "api/services/prompt-optimizer.ts": {
+      "maxDuration": 15
+    },
+    "api/services/terms-analyzer.ts": {
+      "maxDuration": 15
+    },
+    "api/services/intent-router.ts": {
+      "maxDuration": 15
     }
   }
 }
