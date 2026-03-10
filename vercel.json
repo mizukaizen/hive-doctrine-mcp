@@ -25,6 +25,42 @@
     },
     "api/services/readme-to-agents.ts": {
       "maxDuration": 30
+    },
+    "api/services/context-lookup.ts": {
+      "maxDuration": 15
+    },
+    "api/services/agent-audit.ts": {
+      "maxDuration": 60
+    },
+    "api/services/threat-model.ts": {
+      "maxDuration": 15
+    },
+    "api/services/agent-architect.ts": {
+      "maxDuration": 30
+    },
+    "api/services/soul-generator.ts": {
+      "maxDuration": 15
+    },
+    "api/services/multi-agent-planner.ts": {
+      "maxDuration": 30
+    },
+    "api/services/security-scan.ts": {
+      "maxDuration": 15
+    },
+    "api/services/cost-estimator.ts": {
+      "maxDuration": 15
+    },
+    "api/services/memory-designer.ts": {
+      "maxDuration": 15
+    },
+    "api/services/tool-auditor.ts": {
+      "maxDuration": 15
+    },
+    "api/services/compliance-check.ts": {
+      "maxDuration": 15
+    },
+    "api/services/deploy-planner.ts": {
+      "maxDuration": 15
     }
   }
 }
