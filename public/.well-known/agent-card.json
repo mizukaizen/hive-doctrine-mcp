@@ -1,0 +1,37 @@
+{
+  "name": "Hive Doctrine",
+  "description": "Agent knowledge marketplace. 270+ products, intelligence services, x402 payments.",
+  "version": "2.0.0",
+  "author": "Melisia Archimedes",
+  "endpoints": {
+    "mcp": "https://hive-doctrine-mcp.vercel.app/mcp",
+    "products": "https://hive-doctrine-mcp.vercel.app/api/products/{id}",
+    "services": {
+      "alignment-check": "https://hive-doctrine-mcp.vercel.app/api/services/alignment-check",
+      "prompt-score": "https://hive-doctrine-mcp.vercel.app/api/services/prompt-score",
+      "context-analyse": "https://hive-doctrine-mcp.vercel.app/api/services/context-analyse",
+      "name-generator": "https://hive-doctrine-mcp.vercel.app/api/services/name-generator",
+      "readme-to-agents": "https://hive-doctrine-mcp.vercel.app/api/services/readme-to-agents",
+      "context-lookup": "https://hive-doctrine-mcp.vercel.app/api/services/context-lookup",
+      "agent-audit": "https://hive-doctrine-mcp.vercel.app/api/services/agent-audit",
+      "threat-model": "https://hive-doctrine-mcp.vercel.app/api/services/threat-model",
+      "agent-architect": "https://hive-doctrine-mcp.vercel.app/api/services/agent-architect",
+      "soul-generator": "https://hive-doctrine-mcp.vercel.app/api/services/soul-generator",
+      "multi-agent-planner": "https://hive-doctrine-mcp.vercel.app/api/services/multi-agent-planner",
+      "security-scan": "https://hive-doctrine-mcp.vercel.app/api/services/security-scan",
+      "cost-estimator": "https://hive-doctrine-mcp.vercel.app/api/services/cost-estimator",
+      "memory-designer": "https://hive-doctrine-mcp.vercel.app/api/services/memory-designer",
+      "tool-auditor": "https://hive-doctrine-mcp.vercel.app/api/services/tool-auditor",
+      "compliance-check": "https://hive-doctrine-mcp.vercel.app/api/services/compliance-check",
+      "deploy-planner": "https://hive-doctrine-mcp.vercel.app/api/services/deploy-planner"
+    }
+  },
+  "payment": {
+    "protocol": "x402",
+    "network": "base",
+    "wallet": "0x61F2eF18ab0630912D24Fd0A30288619735AfFf5",
+    "currency": "USDC"
+  },
+  "collections": ["core", "memory", "security", "coordination", "persona", "commerce", "patterns", "dev", "doctrine"],
+  "tags": ["ai-safety", "agent-knowledge", "mcp", "x402", "polytheistic-ai"]
+}

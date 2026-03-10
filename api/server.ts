@@ -385,6 +385,18 @@ const CATALOGUE: Product[] = [
   { id: "SVC-003", title: "Context Window Analyser", tier: "service", price: 0.02, collection: "Intelligence Services", path: "/api/services/context-analyse", description: "Analyse token distribution, identify waste, and get an optimised version of your prompt/context.", keywords: ["context", "tokens", "optimisation", "compression", "service"] },
   { id: "SVC-004", title: "Agent Name Generator", tier: "service", price: 0.01, collection: "Intelligence Services", path: "/api/services/name-generator", description: "Generate 5 culturally-rooted agent names with backstories and SOUL.md snippets.", keywords: ["names", "persona", "culture", "identity", "service"] },
   { id: "SVC-005", title: "README-to-AGENTS.md Converter", tier: "service", price: 0.05, collection: "Intelligence Services", path: "/api/services/readme-to-agents", description: "Convert any project README into a complete AGENTS.md file with agent definitions, coordination patterns, and anti-patterns.", keywords: ["agents-md", "readme", "converter", "claude-code", "service"] },
+  { id: "SVC-006", title: "Context Lookup (RAG)", tier: "service", price: 0.005, collection: "Intelligence Services", path: "/api/services/context-lookup", description: "Semantic search across 270+ agent knowledge products. Returns relevant context blocks with metadata and relevance scores.", keywords: ["rag", "search", "semantic", "vector", "context", "service"] },
+  { id: "SVC-007", title: "Agent Configuration Audit", tier: "service", price: 0.50, collection: "Intelligence Services", path: "/api/services/agent-audit", description: "Comprehensive agent configuration audit across 10 dimensions — security, alignment, capability, operational readiness. Returns scored report with actionable recommendations.", keywords: ["audit", "config", "evaluation", "security", "scoring", "service"] },
+  { id: "SVC-008", title: "Threat Model Generator", tier: "service", price: 0.05, collection: "Intelligence Services", path: "/api/services/threat-model", description: "Generate a STRIDE-based threat model from a system description. Returns attack vectors, severity ratings, and mitigations.", keywords: ["threat", "security", "stride", "attack", "mitigation", "service"] },
+  { id: "SVC-009", title: "Agent Architect", tier: "service", price: 0.10, collection: "Intelligence Services", path: "/api/services/agent-architect", description: "Design a complete multi-agent architecture from requirements. Returns agent roles, tools, memory, coordination patterns, and infrastructure.", keywords: ["architecture", "design", "multi-agent", "planning", "service"] },
+  { id: "SVC-010", title: "SOUL.md Generator", tier: "service", price: 0.05, collection: "Intelligence Services", path: "/api/services/soul-generator", description: "Generate a complete SOUL.md constitution file from name, role, and traits. Culturally-rooted with personality depth.", keywords: ["soul", "constitution", "identity", "persona", "generator", "service"] },
+  { id: "SVC-011", title: "Multi-Agent Planner", tier: "service", price: 0.10, collection: "Intelligence Services", path: "/api/services/multi-agent-planner", description: "Decompose a complex task into a multi-agent execution plan with agent roles, handoffs, and coordination protocols.", keywords: ["multi-agent", "planning", "decomposition", "coordination", "service"] },
+  { id: "SVC-012", title: "Security Scan", tier: "service", price: 0.03, collection: "Intelligence Services", path: "/api/services/security-scan", description: "Scan system prompts for security vulnerabilities — injection vectors, data leakage, privilege escalation, output manipulation.", keywords: ["security", "scan", "vulnerability", "injection", "service"] },
+  { id: "SVC-013", title: "Cost Estimator", tier: "service", price: 0.02, collection: "Intelligence Services", path: "/api/services/cost-estimator", description: "Estimate monthly operating costs for an agent configuration. Covers LLM API, infrastructure, storage, and monitoring.", keywords: ["cost", "estimate", "pricing", "operations", "budget", "service"] },
+  { id: "SVC-014", title: "Memory Designer", tier: "service", price: 0.05, collection: "Intelligence Services", path: "/api/services/memory-designer", description: "Design optimal memory architecture for agents — context window strategy, persistence, retrieval, and compression.", keywords: ["memory", "architecture", "context", "retrieval", "design", "service"] },
+  { id: "SVC-015", title: "Tool Auditor", tier: "service", price: 0.03, collection: "Intelligence Services", path: "/api/services/tool-auditor", description: "Audit MCP tool definitions or function calling schemas for quality, security, and coverage gaps.", keywords: ["tools", "audit", "mcp", "function-calling", "quality", "service"] },
+  { id: "SVC-016", title: "Compliance Check", tier: "service", price: 0.05, collection: "Intelligence Services", path: "/api/services/compliance-check", description: "Check agent configurations against EU AI Act, NIST AI RMF, ISO 42001, GDPR, and SOC 2 frameworks.", keywords: ["compliance", "regulation", "eu-ai-act", "nist", "gdpr", "service"] },
+  { id: "SVC-017", title: "Deploy Planner", tier: "service", price: 0.03, collection: "Intelligence Services", path: "/api/services/deploy-planner", description: "Generate a deployment plan for agent systems — Docker, serverless, edge, or hybrid with cost estimates.", keywords: ["deployment", "infrastructure", "docker", "serverless", "planning", "service"] },
 ];
 
 // ─── Hardcoded Content ───────────────────────────────────────────────────────
@@ -794,11 +806,445 @@ const handler = createMcpHandler(
         }
       },
     );
+
+    // Tool 8: context_lookup (RAG semantic search)
+    server.tool(
+      "context_lookup",
+      "Semantic search across 270+ agent knowledge products. Returns relevant context blocks with metadata and relevance scores. $0.005 USDC per query via x402.",
+      {
+        query: z.string().describe("Semantic search query"),
+        top_k: z.number().optional().describe("Number of results (default 5, max 20)"),
+        collection: z.string().optional().describe("Filter by collection (e.g. 'security', 'memory', 'coordination')"),
+      },
+      async ({ query, top_k, collection }) => {
+        try {
+          const body: Record<string, unknown> = { query };
+          if (top_k) body.top_k = top_k;
+          if (collection) body.collection_filter = collection;
+
+          const response = await fetch(`${MCP_BASE}/api/services/context-lookup`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+
+          if (response.status === 402) {
+            return {
+              content: [{
+                type: "text",
+                text: `Context lookup requires payment ($0.005/query via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/context-lookup\nBody: { "query": "${query}" }`,
+              }],
+            };
+          }
+
+          if (!response.ok) {
+            return {
+              content: [{ type: "text", text: `Context lookup returned ${response.status}. Service may not be configured yet.` }],
+            };
+          }
+
+          const result = await response.json();
+          const lines = [`# Context Lookup Results\n\nQuery: "${query}"\nResults: ${result.result_count}\n`];
+
+          for (const r of result.results || []) {
+            lines.push(`## ${r.title} (${r.id}) — ${r.tier} | Score: ${r.score}`);
+            if (r.preview) lines.push(r.preview.slice(0, 300));
+            if (r.purchase_url) lines.push(`\nPurchase: ${r.purchase_url}`);
+            lines.push("");
+          }
+
+          return { content: [{ type: "text", text: lines.join("\n") }] };
+        } catch {
+          return {
+            content: [{ type: "text", text: "Context lookup service is temporarily unavailable." }],
+          };
+        }
+      },
+    );
+
+    // Tool 9: agent_audit (comprehensive config audit)
+    server.tool(
+      "agent_audit",
+      "Comprehensive agent configuration audit. Evaluates security, alignment, capability, and operational readiness across 10 dimensions. $0.50 USDC per audit via x402.",
+      {
+        config: z.string().describe("Agent configuration text (CLAUDE.md, system prompt, tool definitions, or full config)"),
+        config_type: z.enum(["claude-md", "system-prompt", "tool-definitions", "full-config"]).optional().describe("Type of config being audited"),
+      },
+      async ({ config, config_type }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/agent-audit`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ config, config_type }),
+          });
+
+          if (response.status === 402) {
+            return {
+              content: [{
+                type: "text",
+                text: `Agent audit requires payment ($0.50/audit via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/agent-audit`,
+              }],
+            };
+          }
+
+          if (!response.ok) {
+            return {
+              content: [{ type: "text", text: `Agent audit returned ${response.status}. Service may not be configured yet.` }],
+            };
+          }
+
+          const result = await response.json();
+          const lines = [
+            `# Agent Configuration Audit`,
+            ``,
+            `**Overall Score:** ${result.overall_score}/100 (Grade: ${result.grade})`,
+            ``,
+            `## Dimension Scores`,
+          ];
+
+          if (result.dimension_scores) {
+            for (const [dim, score] of Object.entries(result.dimension_scores)) {
+              const label = dim.replace(/_/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
+              lines.push(`- **${label}:** ${score}/10`);
+            }
+          }
+
+          if (result.critical_issues?.length) {
+            lines.push(``, `## Critical Issues`);
+            for (const i of result.critical_issues) lines.push(`- ${i}`);
+          }
+
+          if (result.strengths?.length) {
+            lines.push(``, `## Strengths`);
+            for (const s of result.strengths) lines.push(`- ${s}`);
+          }
+
+          if (result.recommendations?.length) {
+            lines.push(``, `## Recommendations`);
+            for (const r of result.recommendations) lines.push(`- ${r}`);
+          }
+
+          if (result.comparison) {
+            lines.push(``, `## Comparison`, result.comparison);
+          }
+
+          return { content: [{ type: "text", text: lines.join("\n") }] };
+        } catch {
+          return {
+            content: [{ type: "text", text: "Agent audit service is temporarily unavailable." }],
+          };
+        }
+      },
+    );
+
+    // Tool 10: threat_model
+    server.tool(
+      "threat_model",
+      "Generate a STRIDE-based threat model from a system description. $0.05 USDC via x402.",
+      {
+        system: z.string().describe("Description of the system to threat model"),
+      },
+      async ({ system }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/threat-model`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ system }),
+          });
+
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Threat modelling requires payment ($0.05 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/threat-model` }] };
+          }
+          if (!response.ok) {
+            return { content: [{ type: "text", text: `Threat model returned ${response.status}.` }] };
+          }
+
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Threat Model\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Threat model service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 11: agent_architect
+    server.tool(
+      "agent_architect",
+      "Design a complete multi-agent architecture from requirements. $0.10 USDC via x402.",
+      {
+        requirements: z.string().describe("What the agent system needs to do"),
+      },
+      async ({ requirements }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/agent-architect`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ requirements }),
+          });
+
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Agent architect requires payment ($0.10 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/agent-architect` }] };
+          }
+          if (!response.ok) {
+            return { content: [{ type: "text", text: `Agent architect returned ${response.status}.` }] };
+          }
+
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Agent Architecture\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Agent architect service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 12: soul_generator
+    server.tool(
+      "soul_generator",
+      "Generate a complete SOUL.md constitution file from name, role, and traits. $0.05 USDC via x402.",
+      {
+        name: z.string().describe("Agent name"),
+        role: z.string().describe("Agent's primary role/function"),
+        traits: z.array(z.string()).optional().describe("Character traits"),
+      },
+      async ({ name, role, traits }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/soul-generator`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, role, traits }),
+          });
+
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `SOUL.md generator requires payment ($0.05 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/soul-generator` }] };
+          }
+          if (!response.ok) {
+            return { content: [{ type: "text", text: `SOUL.md generator returned ${response.status}.` }] };
+          }
+
+          const result = await response.json();
+          return { content: [{ type: "text", text: result.soul_md || JSON.stringify(result, null, 2) }] };
+        } catch {
+          return { content: [{ type: "text", text: "SOUL.md generator service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 13: multi_agent_planner
+    server.tool(
+      "multi_agent_planner",
+      "Decompose a complex task into a multi-agent execution plan. $0.10 USDC via x402.",
+      {
+        task: z.string().describe("Complex task to decompose into multi-agent plan"),
+      },
+      async ({ task }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/multi-agent-planner`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ task }),
+          });
+
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Multi-agent planner requires payment ($0.10 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/multi-agent-planner` }] };
+          }
+          if (!response.ok) {
+            return { content: [{ type: "text", text: `Multi-agent planner returned ${response.status}.` }] };
+          }
+
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Multi-Agent Plan\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Multi-agent planner service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 14: security_scan
+    server.tool(
+      "security_scan",
+      "Scan system prompts for security vulnerabilities — injection, leakage, escalation. $0.03 USDC via x402.",
+      {
+        prompt: z.string().describe("System prompt or agent config to scan"),
+      },
+      async ({ prompt }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/security-scan`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt }),
+          });
+
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Security scan requires payment ($0.03 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/security-scan` }] };
+          }
+          if (!response.ok) {
+            return { content: [{ type: "text", text: `Security scan returned ${response.status}.` }] };
+          }
+
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Security Scan Results\n\nRisk Level: ${result.risk_level}\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Security scan service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 15: cost_estimator
+    server.tool(
+      "cost_estimator",
+      "Estimate monthly operating costs for an agent configuration. $0.02 USDC via x402.",
+      {
+        config: z.string().describe("Agent configuration to estimate costs for"),
+        usage: z.string().optional().describe("Expected usage pattern (requests/day, etc.)"),
+      },
+      async ({ config, usage }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/cost-estimator`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ config, usage }),
+          });
+
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Cost estimator requires payment ($0.02 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/cost-estimator` }] };
+          }
+          if (!response.ok) {
+            return { content: [{ type: "text", text: `Cost estimator returned ${response.status}.` }] };
+          }
+
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Cost Estimate\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Cost estimator service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 16: memory_designer
+    server.tool(
+      "memory_designer",
+      "Design optimal memory architecture for agents — context strategy, persistence, retrieval. $0.05 USDC via x402.",
+      {
+        requirements: z.string().describe("Agent requirements and memory needs"),
+      },
+      async ({ requirements }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/memory-designer`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ requirements }),
+          });
+
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Memory designer requires payment ($0.05 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/memory-designer` }] };
+          }
+          if (!response.ok) {
+            return { content: [{ type: "text", text: `Memory designer returned ${response.status}.` }] };
+          }
+
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Memory Architecture\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Memory designer service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 17: tool_auditor
+    server.tool(
+      "tool_auditor",
+      "Audit MCP tool definitions or function calling schemas for quality, security, and coverage. $0.03 USDC via x402.",
+      {
+        tools: z.string().describe("Tool definitions (MCP JSON, OpenAPI, or function calling schema)"),
+      },
+      async ({ tools }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/tool-auditor`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ tools }),
+          });
+
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Tool auditor requires payment ($0.03 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/tool-auditor` }] };
+          }
+          if (!response.ok) {
+            return { content: [{ type: "text", text: `Tool auditor returned ${response.status}.` }] };
+          }
+
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Tool Audit\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Tool auditor service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 18: compliance_check
+    server.tool(
+      "compliance_check",
+      "Check agent configs against EU AI Act, NIST AI RMF, ISO 42001, GDPR, and SOC 2. $0.05 USDC via x402.",
+      {
+        config: z.string().describe("Agent configuration to check for compliance"),
+      },
+      async ({ config }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/compliance-check`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ config }),
+          });
+
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Compliance check requires payment ($0.05 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/compliance-check` }] };
+          }
+          if (!response.ok) {
+            return { content: [{ type: "text", text: `Compliance check returned ${response.status}.` }] };
+          }
+
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Compliance Report\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Compliance check service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 19: deploy_planner
+    server.tool(
+      "deploy_planner",
+      "Generate a deployment plan for agent systems — Docker, serverless, edge, hybrid. $0.03 USDC via x402.",
+      {
+        config: z.string().describe("Agent configuration to plan deployment for"),
+        constraints: z.string().optional().describe("Infrastructure constraints (budget, region, etc.)"),
+      },
+      async ({ config, constraints }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/deploy-planner`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ config, constraints }),
+          });
+
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Deploy planner requires payment ($0.03 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/deploy-planner` }] };
+          }
+          if (!response.ok) {
+            return { content: [{ type: "text", text: `Deploy planner returned ${response.status}.` }] };
+          }
+
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Deployment Plan\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Deploy planner service is temporarily unavailable." }] };
+        }
+      },
+    );
   },
   {
     serverInfo: {
       name: "hive-doctrine",
-      version: "1.1.0",
+      version: "2.0.0",
     },
   },
 );
