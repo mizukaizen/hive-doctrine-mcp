@@ -397,6 +397,18 @@ const CATALOGUE: Product[] = [
   { id: "SVC-015", title: "Tool Auditor", tier: "service", price: 0.03, collection: "Intelligence Services", path: "/api/services/tool-auditor", description: "Audit MCP tool definitions or function calling schemas for quality, security, and coverage gaps.", keywords: ["tools", "audit", "mcp", "function-calling", "quality", "service"] },
   { id: "SVC-016", title: "Compliance Check", tier: "service", price: 0.05, collection: "Intelligence Services", path: "/api/services/compliance-check", description: "Check agent configurations against EU AI Act, NIST AI RMF, ISO 42001, GDPR, and SOC 2 frameworks.", keywords: ["compliance", "regulation", "eu-ai-act", "nist", "gdpr", "service"] },
   { id: "SVC-017", title: "Deploy Planner", tier: "service", price: 0.03, collection: "Intelligence Services", path: "/api/services/deploy-planner", description: "Generate a deployment plan for agent systems — Docker, serverless, edge, or hybrid with cost estimates.", keywords: ["deployment", "infrastructure", "docker", "serverless", "planning", "service"] },
+  { id: "SVC-018", title: "Fact Check", tier: "service", price: 0.001, collection: "Intelligence Services", path: "/api/services/fact-check", description: "AI-generated factual plausibility assessment. Returns hedged verdict, confidence score, and caveats. Not a substitute for authoritative fact-checking.", keywords: ["fact-check", "verification", "claims", "truth", "service"] },
+  { id: "SVC-019", title: "Hallucination Check", tier: "service", price: 0.10, collection: "Intelligence Services", path: "/api/services/hallucination-check", description: "AI-generated comparison of output against source material to flag potential hallucinations. Sonnet-powered analysis.", keywords: ["hallucination", "faithfulness", "grounding", "verification", "service"] },
+  { id: "SVC-020", title: "Schema Validator", tier: "service", price: 0.001, collection: "Intelligence Services", path: "/api/services/schema-validator", description: "AI-generated schema analysis for MCP tools, OpenAPI specs, JSON schemas, and agent cards. Flags potential issues.", keywords: ["schema", "validation", "mcp", "openapi", "json-schema", "service"] },
+  { id: "SVC-021", title: "Anti-Scam Check", tier: "service", price: 0.001, collection: "Intelligence Services", path: "/api/services/anti-scam-check", description: "Heuristic risk analysis of x402 endpoints and MCP servers. Pattern-based red flag detection only.", keywords: ["scam", "risk", "security", "x402", "trust", "service"] },
+  { id: "SVC-022", title: "Context Optimizer", tier: "service", price: 0.02, collection: "Intelligence Services", path: "/api/services/context-optimizer", description: "AI-generated suggestions for LLM inference parameters based on task type and model.", keywords: ["optimization", "parameters", "temperature", "inference", "service"] },
+  { id: "SVC-023", title: "Jurisdiction Check", tier: "service", price: 0.02, collection: "Intelligence Services", path: "/api/services/jurisdiction-check", description: "Automated regulatory landscape scan — identifies potentially applicable regulations for review. NOT legal advice.", keywords: ["jurisdiction", "regulation", "gdpr", "compliance", "legal", "service"] },
+  { id: "SVC-024", title: "Kill Switch", tier: "service", price: 0.05, collection: "Intelligence Services", path: "/api/services/kill-switch", description: "Automated budget/safety analysis for proposed agent actions. Preliminary signal only — NOT an authorization.", keywords: ["kill-switch", "budget", "safety", "guardrail", "authorization", "service"] },
+  { id: "SVC-025", title: "API-to-MCP Converter", tier: "service", price: 1.50, collection: "Intelligence Services", path: "/api/services/api-to-mcp", description: "AI-generated MCP tool definitions and server scaffold from REST API specs. Review before use.", keywords: ["api", "mcp", "converter", "openapi", "tools", "service"] },
+  { id: "SVC-026", title: "Vibe Audit", tier: "service", price: 0.50, collection: "Intelligence Services", path: "/api/services/vibe-audit", description: "AI-generated brand voice consistency analysis across content samples. Subjective assessment.", keywords: ["brand", "voice", "consistency", "tone", "style", "service"] },
+  { id: "SVC-027", title: "Prompt Optimizer", tier: "service", price: 0.05, collection: "Intelligence Services", path: "/api/services/prompt-optimizer", description: "AI-generated prompt optimization suggestions for cost, quality, or speed. Test before adopting.", keywords: ["prompt", "optimization", "cost", "quality", "engineering", "service"] },
+  { id: "SVC-028", title: "Terms Analyzer", tier: "service", price: 0.05, collection: "Intelligence Services", path: "/api/services/terms-analyzer", description: "Automated preliminary scan of Terms of Service for AI agent relevance. NOT legal advice.", keywords: ["terms", "tos", "legal", "analysis", "agent", "service"] },
+  { id: "SVC-029", title: "Intent Router", tier: "service", price: 0.005, collection: "Intelligence Services", path: "/api/services/intent-router", description: "AI-generated service routing suggestions based on natural language queries.", keywords: ["routing", "intent", "discovery", "matching", "service"] },
 ];
 
 // ─── Hardcoded Content ───────────────────────────────────────────────────────
@@ -1240,11 +1252,344 @@ const handler = createMcpHandler(
         }
       },
     );
+
+    // Tool 20: fact_check
+    server.tool(
+      "fact_check",
+      "AI-generated factual plausibility assessment. $0.001 USDC via x402.",
+      {
+        claim: z.string().describe("Claim to fact-check"),
+        context: z.string().optional().describe("Additional context"),
+      },
+      async ({ claim, context }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/fact-check`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ claim, context }),
+          });
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Fact check requires payment ($0.001 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/fact-check` }] };
+          }
+          if (!response.ok) return { content: [{ type: "text", text: `Fact check returned ${response.status}.` }] };
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Fact Check\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Fact check service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 21: hallucination_check
+    server.tool(
+      "hallucination_check",
+      "Compare AI output against source material to flag potential hallucinations. $0.10 USDC via x402.",
+      {
+        output: z.string().describe("AI output to check"),
+        source_material: z.string().describe("Original source material"),
+        task_description: z.string().optional().describe("Task context"),
+      },
+      async ({ output, source_material, task_description }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/hallucination-check`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ output, source_material, task_description }),
+          });
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Hallucination check requires payment ($0.10 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/hallucination-check` }] };
+          }
+          if (!response.ok) return { content: [{ type: "text", text: `Hallucination check returned ${response.status}.` }] };
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Hallucination Check\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Hallucination check service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 22: schema_validator
+    server.tool(
+      "schema_validator",
+      "Validate MCP tools, OpenAPI specs, JSON schemas, and agent cards. $0.001 USDC via x402.",
+      {
+        schema: z.string().describe("Schema to validate (JSON string)"),
+        schema_type: z.enum(["mcp-tool", "openapi", "json-schema", "agent-card"]).optional().describe("Schema type"),
+      },
+      async ({ schema, schema_type }) => {
+        try {
+          let schemaObj;
+          try { schemaObj = JSON.parse(schema); } catch { schemaObj = schema; }
+          const response = await fetch(`${MCP_BASE}/api/services/schema-validator`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ schema: schemaObj, schema_type }),
+          });
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Schema validator requires payment ($0.001 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/schema-validator` }] };
+          }
+          if (!response.ok) return { content: [{ type: "text", text: `Schema validator returned ${response.status}.` }] };
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Schema Validation\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Schema validator service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 23: anti_scam_check
+    server.tool(
+      "anti_scam_check",
+      "Heuristic risk analysis of x402/MCP endpoints for red flags. $0.001 USDC via x402.",
+      {
+        endpoint_url: z.string().describe("Endpoint URL to analyse"),
+        agent_card: z.string().optional().describe("Agent card JSON (as string)"),
+      },
+      async ({ endpoint_url, agent_card }) => {
+        try {
+          const body: Record<string, unknown> = { endpoint_url };
+          if (agent_card) { try { body.agent_card = JSON.parse(agent_card); } catch { body.agent_card = agent_card; } }
+          const response = await fetch(`${MCP_BASE}/api/services/anti-scam-check`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Anti-scam check requires payment ($0.001 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/anti-scam-check` }] };
+          }
+          if (!response.ok) return { content: [{ type: "text", text: `Anti-scam check returned ${response.status}.` }] };
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Anti-Scam Check\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Anti-scam check service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 24: context_optimizer
+    server.tool(
+      "context_optimizer",
+      "Suggest optimal LLM inference parameters for a task type. $0.02 USDC via x402.",
+      {
+        task_type: z.string().describe("Type of task (e.g. 'code generation', 'summarisation')"),
+        model: z.string().describe("LLM model name"),
+      },
+      async ({ task_type, model }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/context-optimizer`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ task_type, model }),
+          });
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Context optimizer requires payment ($0.02 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/context-optimizer` }] };
+          }
+          if (!response.ok) return { content: [{ type: "text", text: `Context optimizer returned ${response.status}.` }] };
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Context Optimization\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Context optimizer service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 25: jurisdiction_check
+    server.tool(
+      "jurisdiction_check",
+      "Regulatory landscape scan for potentially applicable regulations. NOT legal advice. $0.02 USDC via x402.",
+      {
+        endpoint_url: z.string().describe("Endpoint URL to check"),
+        data_types: z.array(z.string()).describe("Data types processed (e.g. 'personal_data', 'financial')"),
+        user_jurisdiction: z.string().optional().describe("User's jurisdiction (e.g. 'EU', 'US-CA')"),
+      },
+      async ({ endpoint_url, data_types, user_jurisdiction }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/jurisdiction-check`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ endpoint_url, data_types, user_jurisdiction }),
+          });
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Jurisdiction check requires payment ($0.02 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/jurisdiction-check` }] };
+          }
+          if (!response.ok) return { content: [{ type: "text", text: `Jurisdiction check returned ${response.status}.` }] };
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Jurisdiction Check\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Jurisdiction check service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 26: kill_switch
+    server.tool(
+      "kill_switch",
+      "Budget/safety analysis for proposed agent actions. Preliminary signal, NOT authorization. $0.05 USDC via x402.",
+      {
+        action_description: z.string().describe("What the agent wants to do"),
+        estimated_cost: z.number().describe("Estimated cost of the action"),
+        budget_limit: z.number().describe("Budget limit"),
+        risk_tolerance: z.enum(["conservative", "moderate", "aggressive"]).optional().describe("Risk tolerance"),
+      },
+      async ({ action_description, estimated_cost, budget_limit, risk_tolerance }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/kill-switch`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action_description, estimated_cost, budget_limit, risk_tolerance }),
+          });
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Kill switch requires payment ($0.05 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/kill-switch` }] };
+          }
+          if (!response.ok) return { content: [{ type: "text", text: `Kill switch returned ${response.status}.` }] };
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Kill Switch Analysis\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Kill switch service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 27: api_to_mcp
+    server.tool(
+      "api_to_mcp",
+      "Convert REST API specs into MCP tool definitions. $1.50 USDC via x402.",
+      {
+        api_spec: z.string().describe("API specification (OpenAPI, REST description, or GraphQL schema)"),
+        api_type: z.enum(["openapi", "rest-description", "graphql-schema"]).optional().describe("API spec type"),
+      },
+      async ({ api_spec, api_type }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/api-to-mcp`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ api_spec, api_type }),
+          });
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `API-to-MCP requires payment ($1.50 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/api-to-mcp` }] };
+          }
+          if (!response.ok) return { content: [{ type: "text", text: `API-to-MCP returned ${response.status}.` }] };
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# API-to-MCP Conversion\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "API-to-MCP service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 28: vibe_audit
+    server.tool(
+      "vibe_audit",
+      "Brand voice consistency analysis across content samples. $0.50 USDC via x402.",
+      {
+        content_samples: z.array(z.string()).describe("Content samples to analyse"),
+        brand_guidelines: z.string().optional().describe("Brand guidelines"),
+        target_audience: z.string().optional().describe("Target audience"),
+      },
+      async ({ content_samples, brand_guidelines, target_audience }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/vibe-audit`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content_samples, brand_guidelines, target_audience }),
+          });
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Vibe audit requires payment ($0.50 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/vibe-audit` }] };
+          }
+          if (!response.ok) return { content: [{ type: "text", text: `Vibe audit returned ${response.status}.` }] };
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Vibe Audit\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Vibe audit service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 29: prompt_optimizer
+    server.tool(
+      "prompt_optimizer",
+      "Optimize prompts for cost, quality, or speed. $0.05 USDC via x402.",
+      {
+        prompt: z.string().describe("Prompt to optimize"),
+        model: z.string().optional().describe("Target model"),
+        optimization_goal: z.enum(["cost", "quality", "speed", "balanced"]).optional().describe("Optimization goal"),
+      },
+      async ({ prompt, model, optimization_goal }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/prompt-optimizer`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt, model, optimization_goal }),
+          });
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Prompt optimizer requires payment ($0.05 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/prompt-optimizer` }] };
+          }
+          if (!response.ok) return { content: [{ type: "text", text: `Prompt optimizer returned ${response.status}.` }] };
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Prompt Optimization\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Prompt optimizer service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 30: terms_analyzer
+    server.tool(
+      "terms_analyzer",
+      "Preliminary scan of Terms of Service for AI agent relevance. NOT legal advice. $0.05 USDC via x402.",
+      {
+        terms_text: z.string().describe("Terms of service text"),
+        agent_use_case: z.string().describe("How the agent will use the service"),
+      },
+      async ({ terms_text, agent_use_case }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/terms-analyzer`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ terms_text, agent_use_case }),
+          });
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Terms analyzer requires payment ($0.05 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/terms-analyzer` }] };
+          }
+          if (!response.ok) return { content: [{ type: "text", text: `Terms analyzer returned ${response.status}.` }] };
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Terms Analysis\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Terms analyzer service is temporarily unavailable." }] };
+        }
+      },
+    );
+
+    // Tool 31: intent_router
+    server.tool(
+      "intent_router",
+      "Route natural language queries to the best matching service. $0.005 USDC via x402.",
+      {
+        query: z.string().describe("Natural language query describing what you need"),
+      },
+      async ({ query }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/intent-router`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query }),
+          });
+          if (response.status === 402) {
+            return { content: [{ type: "text", text: `Intent router requires payment ($0.005 via x402).\n\nDirect API: POST ${MCP_BASE}/api/services/intent-router` }] };
+          }
+          if (!response.ok) return { content: [{ type: "text", text: `Intent router returned ${response.status}.` }] };
+          const result = await response.json();
+          return { content: [{ type: "text", text: `# Intent Router\n\nSuggested: ${result.suggested_service} (confidence: ${result.confidence})\n\n${JSON.stringify(result, null, 2)}` }] };
+        } catch {
+          return { content: [{ type: "text", text: "Intent router service is temporarily unavailable." }] };
+        }
+      },
+    );
   },
   {
     serverInfo: {
       name: "hive-doctrine",
-      version: "2.0.0",
+      version: "2.1.0",
     },
   },
 );
