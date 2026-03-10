@@ -1,11 +1,13 @@
 {
   "name": "Hive Doctrine",
-  "description": "Agent knowledge marketplace. 270+ products, intelligence services, x402 payments.",
-  "version": "2.0.0",
+  "description": "Agent knowledge marketplace. 302 products, 29 intelligence services, x402 payments.",
+  "version": "2.1.0",
   "author": "Melisia Archimedes",
+  "terms": "https://hive-doctrine-mcp.vercel.app/api/terms",
   "endpoints": {
     "mcp": "https://hive-doctrine-mcp.vercel.app/mcp",
     "products": "https://hive-doctrine-mcp.vercel.app/api/products/{id}",
+    "terms": "https://hive-doctrine-mcp.vercel.app/api/terms",
     "services": {
       "alignment-check": "https://hive-doctrine-mcp.vercel.app/api/services/alignment-check",
       "prompt-score": "https://hive-doctrine-mcp.vercel.app/api/services/prompt-score",
@@ -23,7 +25,19 @@
       "memory-designer": "https://hive-doctrine-mcp.vercel.app/api/services/memory-designer",
       "tool-auditor": "https://hive-doctrine-mcp.vercel.app/api/services/tool-auditor",
       "compliance-check": "https://hive-doctrine-mcp.vercel.app/api/services/compliance-check",
-      "deploy-planner": "https://hive-doctrine-mcp.vercel.app/api/services/deploy-planner"
+      "deploy-planner": "https://hive-doctrine-mcp.vercel.app/api/services/deploy-planner",
+      "fact-check": "https://hive-doctrine-mcp.vercel.app/api/services/fact-check",
+      "hallucination-check": "https://hive-doctrine-mcp.vercel.app/api/services/hallucination-check",
+      "schema-validator": "https://hive-doctrine-mcp.vercel.app/api/services/schema-validator",
+      "anti-scam-check": "https://hive-doctrine-mcp.vercel.app/api/services/anti-scam-check",
+      "context-optimizer": "https://hive-doctrine-mcp.vercel.app/api/services/context-optimizer",
+      "jurisdiction-check": "https://hive-doctrine-mcp.vercel.app/api/services/jurisdiction-check",
+      "kill-switch": "https://hive-doctrine-mcp.vercel.app/api/services/kill-switch",
+      "api-to-mcp": "https://hive-doctrine-mcp.vercel.app/api/services/api-to-mcp",
+      "vibe-audit": "https://hive-doctrine-mcp.vercel.app/api/services/vibe-audit",
+      "prompt-optimizer": "https://hive-doctrine-mcp.vercel.app/api/services/prompt-optimizer",
+      "terms-analyzer": "https://hive-doctrine-mcp.vercel.app/api/services/terms-analyzer",
+      "intent-router": "https://hive-doctrine-mcp.vercel.app/api/services/intent-router"
     }
   },
   "payment": {

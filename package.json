@@ -1,8 +1,8 @@
 {
   "name": "hive-doctrine-mcp",
   "mcpName": "io.github.mizukaizen/hive-doctrine-mcp",
-  "version": "2.0.0",
-  "description": "Agent knowledge marketplace. 270+ products, 19 MCP tools, 17 intelligence services, RAG search, agent audit, x402/CDP payments, ERC-8004 identity. By Melisia Archimedes.",
+  "version": "2.1.0",
+  "description": "Agent knowledge marketplace. 302 products, 31 MCP tools, 29 intelligence services, RAG search, agent audit, x402/CDP payments, ERC-8004 identity. By Melisia Archimedes.",
   "main": "index.js",
   "type": "module",
   "scripts": {
