@@ -13,7 +13,7 @@ const MCP_BASE = "https://hive-doctrine-mcp.vercel.app";
 interface Product {
   id: string;
   title: string;
-  tier: "pollen" | "doctrine" | "honey" | "nectar" | "micro";
+  tier: "pollen" | "doctrine" | "honey" | "nectar" | "micro" | "bundle";
   price: number;
   collection: string;
   path: string;
@@ -317,6 +317,64 @@ const CATALOGUE: Product[] = [
   { id: "SOUL-008", title: "SOUL.md: Supply Chain", tier: "micro", price: 0.99, collection: "SOUL.md Templates", path: "micro/soul-templates/SOUL-008-supply-chain.md", description: "SOUL.md template for supply chain agents.", keywords: ["soul", "supply-chain", "template"] },
   { id: "SOUL-009", title: "SOUL.md: Education & Tutoring", tier: "micro", price: 0.99, collection: "SOUL.md Templates", path: "micro/soul-templates/SOUL-009-education-tutoring.md", description: "SOUL.md template for education and tutoring agents.", keywords: ["soul", "education", "template"] },
   { id: "SOUL-010", title: "SOUL.md: Cybersecurity", tier: "micro", price: 0.99, collection: "SOUL.md Templates", path: "micro/soul-templates/SOUL-010-cybersecurity.md", description: "SOUL.md template for cybersecurity agents.", keywords: ["soul", "cybersecurity", "template"] },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // BATCH 1 — CLAUDE.md / AGENTS.md Project Configs ($4.99–$9.99)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  { id: "HD-3001", title: "CLAUDE.md for Next.js SaaS Projects", tier: "doctrine", price: 4.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3001-nextjs-saas.md", description: "Production-ready CLAUDE.md for Next.js SaaS — auth, billing, multi-tenant, Stripe, Prisma.", keywords: ["claude-md", "nextjs", "saas", "stripe", "prisma"] },
+  { id: "HD-3002", title: "CLAUDE.md for API-First Backends", tier: "doctrine", price: 4.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3002-api-first-backend.md", description: "CLAUDE.md for FastAPI/Express backends — OpenAPI, rate limiting, auth, validation.", keywords: ["claude-md", "api", "fastapi", "express", "backend"] },
+  { id: "HD-3003", title: "CLAUDE.md for Shopify App Development", tier: "doctrine", price: 4.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3003-shopify-app.md", description: "CLAUDE.md for Shopify apps — Polaris, App Bridge, webhooks, billing API.", keywords: ["claude-md", "shopify", "polaris", "app-bridge", "ecommerce"] },
+  { id: "HD-3004", title: "CLAUDE.md for Headless Commerce", tier: "doctrine", price: 4.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3004-headless-commerce.md", description: "CLAUDE.md for headless commerce — Medusa/Saleor, storefront, checkout, inventory.", keywords: ["claude-md", "headless", "commerce", "medusa", "saleor"] },
+  { id: "HD-3005", title: "CLAUDE.md for Data Pipeline Projects", tier: "doctrine", price: 4.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3005-data-pipeline.md", description: "CLAUDE.md for data pipelines — dbt, Airflow, data quality, lineage.", keywords: ["claude-md", "data", "dbt", "airflow", "pipeline"] },
+  { id: "HD-3006", title: "CLAUDE.md for ML Model Development", tier: "doctrine", price: 4.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3006-ml-model-dev.md", description: "CLAUDE.md for ML projects — PyTorch/TF, experiment tracking, model registry.", keywords: ["claude-md", "ml", "pytorch", "tensorflow", "mlops"] },
+  { id: "HD-3007", title: "CLAUDE.md for React Native Projects", tier: "doctrine", price: 4.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3007-react-native.md", description: "CLAUDE.md for React Native — Expo, navigation, native modules, OTA updates.", keywords: ["claude-md", "react-native", "expo", "mobile", "ios", "android"] },
+  { id: "HD-3008", title: "CLAUDE.md for Flutter Projects", tier: "doctrine", price: 4.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3008-flutter.md", description: "CLAUDE.md for Flutter — Riverpod/Bloc, platform channels, CI/CD.", keywords: ["claude-md", "flutter", "dart", "mobile", "riverpod"] },
+  { id: "HD-3009", title: "CLAUDE.md for Terraform Infrastructure", tier: "doctrine", price: 4.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3009-terraform.md", description: "CLAUDE.md for Terraform — modules, state management, drift detection.", keywords: ["claude-md", "terraform", "infrastructure", "iac", "devops"] },
+  { id: "HD-3010", title: "CLAUDE.md for Kubernetes Deployments", tier: "doctrine", price: 4.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3010-kubernetes.md", description: "CLAUDE.md for Kubernetes — Helm, operators, GitOps, observability.", keywords: ["claude-md", "kubernetes", "helm", "gitops", "k8s"] },
+  { id: "HD-3011", title: "CLAUDE.md for Solidity/Smart Contracts", tier: "doctrine", price: 4.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3011-solidity.md", description: "CLAUDE.md for Solidity — Hardhat, testing, auditing, gas optimisation.", keywords: ["claude-md", "solidity", "hardhat", "smart-contracts", "web3"] },
+  { id: "HD-3012", title: "CLAUDE.md for DeFi Protocol Development", tier: "doctrine", price: 4.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3012-defi-protocol.md", description: "CLAUDE.md for DeFi — AMM, lending, oracles, flash loan protection.", keywords: ["claude-md", "defi", "amm", "lending", "web3"] },
+  { id: "HD-3013", title: "AGENTS.md for Monorepo Workflows", tier: "doctrine", price: 9.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3013-monorepo-agents.md", description: "AGENTS.md for monorepos — Turborepo/Nx, task pipelines, shared packages.", keywords: ["agents-md", "monorepo", "turborepo", "nx", "workspace"] },
+  { id: "HD-3014", title: "AGENTS.md for Product Catalogue Management", tier: "doctrine", price: 9.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3014-product-catalogue-agents.md", description: "AGENTS.md for product catalogues — schema, enrichment, syndication.", keywords: ["agents-md", "catalogue", "ecommerce", "pim", "enrichment"] },
+  { id: "HD-3015", title: "AGENTS.md for Jupyter Notebook Workflows", tier: "doctrine", price: 9.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3015-jupyter-agents.md", description: "AGENTS.md for Jupyter — reproducibility, data versioning, collaboration.", keywords: ["agents-md", "jupyter", "notebooks", "data-science", "dvc"] },
+  { id: "HD-3016", title: "AGENTS.md for Cross-Platform CI/CD", tier: "doctrine", price: 9.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3016-cross-platform-cicd-agents.md", description: "AGENTS.md for CI/CD — GitHub Actions, code signing, beta distribution.", keywords: ["agents-md", "cicd", "github-actions", "mobile", "fastlane"] },
+  { id: "HD-3017", title: "AGENTS.md for GitOps Workflows", tier: "doctrine", price: 9.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3017-gitops-agents.md", description: "AGENTS.md for GitOps — ArgoCD/Flux, environment promotion, rollback.", keywords: ["agents-md", "gitops", "argocd", "flux", "kubernetes"] },
+  { id: "HD-3018", title: "AGENTS.md for Multi-Chain DeFi", tier: "doctrine", price: 9.99, collection: "C15 Project Configs", path: "doctrine/claudemd/HD-3018-multichain-agents.md", description: "AGENTS.md for multi-chain DeFi — bridge contracts, multi-network testing.", keywords: ["agents-md", "multichain", "defi", "bridge", "web3"] },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // BATCH 1 — .claude Workspace Packages ($29–$49)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  { id: "HD-4001", title: ".claude for Solo Founders", tier: "honey", price: 39, collection: "C16 Workspace Packages", path: "honey/claude-packages/HD-4001-solo-founder/", description: "Complete .claude workspace for solo founders — validate, build, ship, iterate.", keywords: ["claude-package", "solo-founder", "startup", "mvp", "lean"] },
+  { id: "HD-4002", title: ".claude for Agency Teams", tier: "honey", price: 49, collection: "C16 Workspace Packages", path: "honey/claude-packages/HD-4002-agency-team/", description: "Complete .claude workspace for dev agencies — multi-client management, handoffs.", keywords: ["claude-package", "agency", "multi-client", "handoff", "qa"] },
+  { id: "HD-4003", title: ".claude for OSS Maintainers", tier: "honey", price: 39, collection: "C16 Workspace Packages", path: "honey/claude-packages/HD-4003-oss-maintainer/", description: "Complete .claude workspace for open source — triage, releases, changelogs.", keywords: ["claude-package", "open-source", "oss", "triage", "releases"] },
+  { id: "HD-4004", title: ".claude for Content Creators", tier: "honey", price: 29, collection: "C16 Workspace Packages", path: "honey/claude-packages/HD-4004-content-creator/", description: "Complete .claude workspace for content creators — blog, SEO, social scheduling.", keywords: ["claude-package", "content", "blog", "seo", "social-media"] },
+  { id: "HD-4005", title: ".claude for Consultants", tier: "honey", price: 39, collection: "C16 Workspace Packages", path: "honey/claude-packages/HD-4005-consultant/", description: "Complete .claude workspace for consultants — reports, deliverables, time tracking.", keywords: ["claude-package", "consultant", "reports", "deliverables", "stakeholder"] },
+  { id: "HD-4006", title: ".claude for Research Teams", tier: "honey", price: 49, collection: "C16 Workspace Packages", path: "honey/claude-packages/HD-4006-research-team/", description: "Complete .claude workspace for research — lit review, data analysis, paper writing.", keywords: ["claude-package", "research", "academic", "literature", "statistics"] },
+  { id: "HD-4007", title: ".claude for Security Teams", tier: "honey", price: 49, collection: "C16 Workspace Packages", path: "honey/claude-packages/HD-4007-security-team/", description: "Complete .claude workspace for security — vulnerability scanning, audits, compliance.", keywords: ["claude-package", "security", "vulnerability", "audit", "compliance"] },
+  { id: "HD-4008", title: ".claude for QA Teams", tier: "honey", price: 39, collection: "C16 Workspace Packages", path: "honey/claude-packages/HD-4008-qa-team/", description: "Complete .claude workspace for QA — test generation, bug triage, regression detection.", keywords: ["claude-package", "qa", "testing", "bugs", "regression"] },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // BATCH 1 — Compliance Templates ($9.99–$29)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  { id: "HD-5001", title: "GDPR Data Processing Record Template", tier: "doctrine", price: 9.99, collection: "C17 Compliance", path: "doctrine/compliance/HD-5001-gdpr-data-processing-record.md", description: "Structured GDPR data processing record template for AI agent systems.", keywords: ["compliance", "gdpr", "data-processing", "privacy", "dpia"] },
+  { id: "HD-5002", title: "SOC2 Control Mapping for Agent Systems", tier: "honey", price: 29, collection: "C17 Compliance", path: "honey/compliance-templates/HD-5002-soc2-control-mapping.md", description: "Map agent capabilities to SOC2 Trust Service Criteria with evidence templates.", keywords: ["compliance", "soc2", "controls", "audit", "evidence"] },
+  { id: "HD-5003", title: "AI Ethics Review Template", tier: "doctrine", price: 9.99, collection: "C17 Compliance", path: "doctrine/compliance/HD-5003-ai-ethics-review.md", description: "Structured ethical review framework for agent deployments.", keywords: ["compliance", "ethics", "fairness", "bias", "transparency"] },
+  { id: "HD-5004", title: "Agent Incident Response Playbook", tier: "honey", price: 29, collection: "C17 Compliance", path: "honey/compliance-templates/HD-5004-agent-incident-response.md", description: "What to do when an agent goes wrong — detect, contain, investigate, remediate.", keywords: ["compliance", "incident-response", "playbook", "containment", "post-mortem"] },
+  { id: "HD-5005", title: "Agent Access Control Matrix", tier: "doctrine", price: 9.99, collection: "C17 Compliance", path: "doctrine/compliance/HD-5005-agent-access-control-matrix.md", description: "Role-based access control matrix for multi-agent systems.", keywords: ["compliance", "access-control", "rbac", "permissions", "matrix"] },
+  { id: "HD-5006", title: "Data Retention Policy Template", tier: "doctrine", price: 9.99, collection: "C17 Compliance", path: "doctrine/compliance/HD-5006-data-retention-policy.md", description: "Data retention schedules, auto-purge triggers, and deletion workflows for agents.", keywords: ["compliance", "data-retention", "purge", "archival", "gdpr"] },
+  { id: "HD-5007", title: "Agent Audit Log Specification", tier: "honey", price: 29, collection: "C17 Compliance", path: "honey/compliance-templates/HD-5007-agent-audit-log-spec.md", description: "What to log, format, retention, and review cadence for agent audit trails.", keywords: ["compliance", "audit-log", "logging", "specification", "monitoring"] },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // BATCH 1 — Bundles
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  { id: "BDL-001", title: "The Agent Starter Pack", tier: "bundle", price: 19.99, collection: "C18 Bundles", path: "bundles/BDL-001-agent-starter-pack.md", description: "Four foundational guides — alignment, SOUL.md, security, memory. Perfect for beginners.", keywords: ["bundle", "starter", "beginner", "foundations"] },
+  { id: "BDL-002", title: "The Developer's Essential Kit", tier: "bundle", price: 199, collection: "C18 Bundles", path: "bundles/BDL-002-developer-essential-kit.md", description: "Everything a developer needs — Operator Kit, SDLC Pipeline, Guardrails, Commands. Save $207.", keywords: ["bundle", "developer", "operator-kit", "sdlc", "essential"] },
+  { id: "BDL-003", title: "The Security Professional's Bundle", tier: "bundle", price: 149, collection: "C18 Bundles", path: "bundles/BDL-003-security-professional-bundle.md", description: "Complete security toolkit — audit templates, SOC2 mapping, access controls, ethics review.", keywords: ["bundle", "security", "soc2", "audit", "compliance"] },
+  { id: "BDL-004", title: "The Entrepreneur's Launch Kit", tier: "bundle", price: 149, collection: "C18 Bundles", path: "bundles/BDL-004-entrepreneur-launch-kit.md", description: "Validate your AI product — lean canvas, pricing research, A/B testing, ethics review.", keywords: ["bundle", "entrepreneur", "validation", "pricing", "launch"] },
+  { id: "BDL-005", title: "The Multi-Agent Architect's Collection", tier: "bundle", price: 399, collection: "C18 Bundles", path: "bundles/BDL-005-multi-agent-architect-collection.md", description: "Definitive collection for multi-agent architects — authority, hierarchy, SOPs, AGENTS.md. Save $218.", keywords: ["bundle", "architect", "multi-agent", "authority", "hierarchy"] },
 ];
 
 // ─── Hardcoded Content ───────────────────────────────────────────────────────
@@ -424,7 +482,7 @@ const handler = createMcpHandler(
       "browse_catalogue",
       "Browse The Hive Doctrine product catalogue. Filter by tier, collection, or keyword. Returns all products when no filter is applied.",
       {
-        tier: z.enum(["pollen", "doctrine", "honey", "nectar", "micro", "all"]).optional().describe("Filter by tier. Default: all"),
+        tier: z.enum(["pollen", "doctrine", "honey", "nectar", "micro", "bundle", "all"]).optional().describe("Filter by tier. Default: all"),
         collection: z.string().optional().describe("Filter by collection (e.g. 'C1 Persona Forge', 'C8 Dev Mastery', 'core', 'memory', 'security', 'doctrine', 'nectar')"),
         keyword: z.string().optional().describe("Search titles, descriptions, and keywords"),
       },
