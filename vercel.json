@@ -10,6 +10,21 @@
     },
     "api/products/[id].ts": {
       "maxDuration": 30
+    },
+    "api/services/alignment-check.ts": {
+      "maxDuration": 15
+    },
+    "api/services/prompt-score.ts": {
+      "maxDuration": 15
+    },
+    "api/services/context-analyse.ts": {
+      "maxDuration": 15
+    },
+    "api/services/name-generator.ts": {
+      "maxDuration": 15
+    },
+    "api/services/readme-to-agents.ts": {
+      "maxDuration": 30
     }
   }
 }
