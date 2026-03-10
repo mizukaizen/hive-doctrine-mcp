@@ -6,7 +6,7 @@ const WALLET = "0x61F2eF18ab0630912D24Fd0A30288619735AfFf5";
 const NETWORK = "eip155:8453";
 const FACILITATOR_URL = "https://x402.org/facilitator";
 
-// Full product catalogue — 77 gated products
+// Full product catalogue — 115 gated products
 const PRODUCTS: Record<string, { price: string; file: string }> = {
   // Doctrine ($4.99–$9.99)
   "HD-0001": { price: "9.99", file: "doctrine/fictional-character-sourcing.md" },
@@ -234,6 +234,52 @@ const PRODUCTS: Record<string, { price: string; file: string }> = {
   "SOUL-008": { price: "0.99", file: "micro/soul-templates/SOUL-008-supply-chain.md" },
   "SOUL-009": { price: "0.99", file: "micro/soul-templates/SOUL-009-education-tutoring.md" },
   "SOUL-010": { price: "0.99", file: "micro/soul-templates/SOUL-010-cybersecurity.md" },
+
+  // Batch 1 — CLAUDE.md / AGENTS.md Project Configs
+  "HD-3001": { price: "4.99", file: "doctrine/claudemd/HD-3001-nextjs-saas.md" },
+  "HD-3002": { price: "4.99", file: "doctrine/claudemd/HD-3002-api-first-backend.md" },
+  "HD-3003": { price: "4.99", file: "doctrine/claudemd/HD-3003-shopify-app.md" },
+  "HD-3004": { price: "4.99", file: "doctrine/claudemd/HD-3004-headless-commerce.md" },
+  "HD-3005": { price: "4.99", file: "doctrine/claudemd/HD-3005-data-pipeline.md" },
+  "HD-3006": { price: "4.99", file: "doctrine/claudemd/HD-3006-ml-model-dev.md" },
+  "HD-3007": { price: "4.99", file: "doctrine/claudemd/HD-3007-react-native.md" },
+  "HD-3008": { price: "4.99", file: "doctrine/claudemd/HD-3008-flutter.md" },
+  "HD-3009": { price: "4.99", file: "doctrine/claudemd/HD-3009-terraform.md" },
+  "HD-3010": { price: "4.99", file: "doctrine/claudemd/HD-3010-kubernetes.md" },
+  "HD-3011": { price: "4.99", file: "doctrine/claudemd/HD-3011-solidity.md" },
+  "HD-3012": { price: "4.99", file: "doctrine/claudemd/HD-3012-defi-protocol.md" },
+  "HD-3013": { price: "9.99", file: "doctrine/claudemd/HD-3013-monorepo-agents.md" },
+  "HD-3014": { price: "9.99", file: "doctrine/claudemd/HD-3014-product-catalogue-agents.md" },
+  "HD-3015": { price: "9.99", file: "doctrine/claudemd/HD-3015-jupyter-agents.md" },
+  "HD-3016": { price: "9.99", file: "doctrine/claudemd/HD-3016-cross-platform-cicd-agents.md" },
+  "HD-3017": { price: "9.99", file: "doctrine/claudemd/HD-3017-gitops-agents.md" },
+  "HD-3018": { price: "9.99", file: "doctrine/claudemd/HD-3018-multichain-agents.md" },
+
+  // Batch 1 — .claude Workspace Packages
+  "HD-4001": { price: "39", file: "honey/claude-packages/HD-4001-solo-founder/README.md" },
+  "HD-4002": { price: "49", file: "honey/claude-packages/HD-4002-agency-team/README.md" },
+  "HD-4003": { price: "39", file: "honey/claude-packages/HD-4003-oss-maintainer/README.md" },
+  "HD-4004": { price: "29", file: "honey/claude-packages/HD-4004-content-creator/README.md" },
+  "HD-4005": { price: "39", file: "honey/claude-packages/HD-4005-consultant/README.md" },
+  "HD-4006": { price: "49", file: "honey/claude-packages/HD-4006-research-team/README.md" },
+  "HD-4007": { price: "49", file: "honey/claude-packages/HD-4007-security-team/README.md" },
+  "HD-4008": { price: "39", file: "honey/claude-packages/HD-4008-qa-team/README.md" },
+
+  // Batch 1 — Compliance Templates
+  "HD-5001": { price: "9.99", file: "doctrine/compliance/HD-5001-gdpr-data-processing-record.md" },
+  "HD-5002": { price: "29", file: "honey/compliance-templates/HD-5002-soc2-control-mapping.md" },
+  "HD-5003": { price: "9.99", file: "doctrine/compliance/HD-5003-ai-ethics-review.md" },
+  "HD-5004": { price: "29", file: "honey/compliance-templates/HD-5004-agent-incident-response.md" },
+  "HD-5005": { price: "9.99", file: "doctrine/compliance/HD-5005-agent-access-control-matrix.md" },
+  "HD-5006": { price: "9.99", file: "doctrine/compliance/HD-5006-data-retention-policy.md" },
+  "HD-5007": { price: "29", file: "honey/compliance-templates/HD-5007-agent-audit-log-spec.md" },
+
+  // Batch 1 — Bundles
+  "BDL-001": { price: "19.99", file: "bundles/BDL-001-agent-starter-pack.md" },
+  "BDL-002": { price: "199", file: "bundles/BDL-002-developer-essential-kit.md" },
+  "BDL-003": { price: "149", file: "bundles/BDL-003-security-professional-bundle.md" },
+  "BDL-004": { price: "149", file: "bundles/BDL-004-entrepreneur-launch-kit.md" },
+  "BDL-005": { price: "399", file: "bundles/BDL-005-multi-agent-architect-collection.md" },
 };
 
 // USDC on Base has 6 decimals
