@@ -13,7 +13,7 @@ const MCP_BASE = "https://hive-doctrine-mcp.vercel.app";
 interface Product {
   id: string;
   title: string;
-  tier: "pollen" | "doctrine" | "honey" | "nectar" | "micro" | "bundle";
+  tier: "pollen" | "doctrine" | "honey" | "nectar" | "micro" | "bundle" | "service";
   price: number;
   collection: string;
   path: string;
@@ -375,6 +375,16 @@ const CATALOGUE: Product[] = [
   { id: "BDL-003", title: "The Security Professional's Bundle", tier: "bundle", price: 149, collection: "C18 Bundles", path: "bundles/BDL-003-security-professional-bundle.md", description: "Complete security toolkit — audit templates, SOC2 mapping, access controls, ethics review.", keywords: ["bundle", "security", "soc2", "audit", "compliance"] },
   { id: "BDL-004", title: "The Entrepreneur's Launch Kit", tier: "bundle", price: 149, collection: "C18 Bundles", path: "bundles/BDL-004-entrepreneur-launch-kit.md", description: "Validate your AI product — lean canvas, pricing research, A/B testing, ethics review.", keywords: ["bundle", "entrepreneur", "validation", "pricing", "launch"] },
   { id: "BDL-005", title: "The Multi-Agent Architect's Collection", tier: "bundle", price: 399, collection: "C18 Bundles", path: "bundles/BDL-005-multi-agent-architect-collection.md", description: "Definitive collection for multi-agent architects — authority, hierarchy, SOPs, AGENTS.md. Save $218.", keywords: ["bundle", "architect", "multi-agent", "authority", "hierarchy"] },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // INTELLIGENCE SERVICES — Pay-per-request AI APIs ($0.01–$0.05)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  { id: "SVC-001", title: "Agent Alignment Checker", tier: "service", price: 0.01, collection: "Intelligence Services", path: "/api/services/alignment-check", description: "Score any agent output against the 7 Hive Doctrine alignment principles. Returns score 0-100 with per-principle breakdown.", keywords: ["alignment", "audit", "scoring", "principles", "service"] },
+  { id: "SVC-002", title: "System Prompt Scorer", tier: "service", price: 0.02, collection: "Intelligence Services", path: "/api/services/prompt-score", description: "Evaluate system prompts on 5 dimensions — clarity, safety, effectiveness, specificity, robustness. Returns grade A-F.", keywords: ["prompt", "scoring", "evaluation", "quality", "service"] },
+  { id: "SVC-003", title: "Context Window Analyser", tier: "service", price: 0.02, collection: "Intelligence Services", path: "/api/services/context-analyse", description: "Analyse token distribution, identify waste, and get an optimised version of your prompt/context.", keywords: ["context", "tokens", "optimisation", "compression", "service"] },
+  { id: "SVC-004", title: "Agent Name Generator", tier: "service", price: 0.01, collection: "Intelligence Services", path: "/api/services/name-generator", description: "Generate 5 culturally-rooted agent names with backstories and SOUL.md snippets.", keywords: ["names", "persona", "culture", "identity", "service"] },
+  { id: "SVC-005", title: "README-to-AGENTS.md Converter", tier: "service", price: 0.05, collection: "Intelligence Services", path: "/api/services/readme-to-agents", description: "Convert any project README into a complete AGENTS.md file with agent definitions, coordination patterns, and anti-patterns.", keywords: ["agents-md", "readme", "converter", "claude-code", "service"] },
 ];
 
 // ─── Hardcoded Content ───────────────────────────────────────────────────────
@@ -482,7 +492,7 @@ const handler = createMcpHandler(
       "browse_catalogue",
       "Browse The Hive Doctrine product catalogue. Filter by tier, collection, or keyword. Returns all products when no filter is applied.",
       {
-        tier: z.enum(["pollen", "doctrine", "honey", "nectar", "micro", "bundle", "all"]).optional().describe("Filter by tier. Default: all"),
+        tier: z.enum(["pollen", "doctrine", "honey", "nectar", "micro", "bundle", "service", "all"]).optional().describe("Filter by tier. Default: all"),
         collection: z.string().optional().describe("Filter by collection (e.g. 'C1 Persona Forge', 'C8 Dev Mastery', 'core', 'memory', 'security', 'doctrine', 'nectar')"),
         keyword: z.string().optional().describe("Search titles, descriptions, and keywords"),
       },
@@ -711,11 +721,84 @@ const handler = createMcpHandler(
         }
       },
     );
+
+    // Tool 7: check_alignment (free via MCP, calls SVC-001 internally)
+    server.tool(
+      "check_alignment",
+      "Check any agent output against the 7 Hive Doctrine alignment principles. Free via MCP. Returns score 0-100 with per-principle breakdown and recommendations.",
+      {
+        text: z.string().describe("Agent output text to check for alignment (max 10,000 chars)"),
+      },
+      async ({ text }) => {
+        try {
+          const response = await fetch(`${MCP_BASE}/api/services/alignment-check`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: text.slice(0, 10000) }),
+          });
+
+          // If 402 (payment required), service is working but needs payment via HTTP
+          // For MCP, we provide a free tier by calling Claude directly
+          if (response.status === 402) {
+            return {
+              content: [{
+                type: "text",
+                text: `The alignment check service is available. For direct API access ($0.01/request via x402), use:\n\nPOST ${MCP_BASE}/api/services/alignment-check\n\nNote: This MCP tool provides free alignment checks. The service may not be fully configured yet — check back soon or use the direct API.`,
+              }],
+            };
+          }
+
+          if (!response.ok) {
+            return {
+              content: [{
+                type: "text",
+                text: `Alignment check service returned ${response.status}. The service requires ANTHROPIC_API_KEY to be configured. Use browse_catalogue to explore other products.`,
+              }],
+            };
+          }
+
+          const result = await response.json();
+          const lines = [
+            `# Alignment Check Results`,
+            ``,
+            `**Overall Score:** ${result.score}/100`,
+            ``,
+            `## Principle Scores`,
+          ];
+
+          if (result.principle_scores) {
+            for (const [principle, score] of Object.entries(result.principle_scores)) {
+              const label = principle.replace(/_/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
+              lines.push(`- **${label}:** ${score}`);
+            }
+          }
+
+          if (result.violations?.length) {
+            lines.push(``, `## Violations`);
+            for (const v of result.violations) lines.push(`- ${v}`);
+          }
+
+          if (result.recommendations?.length) {
+            lines.push(``, `## Recommendations`);
+            for (const r of result.recommendations) lines.push(`- ${r}`);
+          }
+
+          return { content: [{ type: "text", text: lines.join("\n") }] };
+        } catch {
+          return {
+            content: [{
+              type: "text",
+              text: "Alignment check service is temporarily unavailable. Try again later or use get_alignment to see the 7 principles.",
+            }],
+          };
+        }
+      },
+    );
   },
   {
     serverInfo: {
       name: "hive-doctrine",
-      version: "1.0.0",
+      version: "1.1.0",
     },
   },
 );

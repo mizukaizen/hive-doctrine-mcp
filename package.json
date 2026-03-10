@@ -1,8 +1,8 @@
 {
   "name": "hive-doctrine-mcp",
   "mcpName": "io.github.mizukaizen/hive-doctrine-mcp",
-  "version": "1.1.0",
-  "description": "Agent knowledge marketplace. 265 products, 6 MCP tools, x402 payments. Project configs, workspace packages, compliance templates. By Melisia Archimedes.",
+  "version": "1.2.0",
+  "description": "Agent knowledge marketplace. 270 products, 7 MCP tools, 5 intelligence services, x402/CDP payments. By Melisia Archimedes.",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -24,10 +24,13 @@
   },
   "homepage": "https://hivedoctrine.com",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
+    "@coinbase/x402": "^2.1.0",
     "@modelcontextprotocol/sdk": "1.25.2",
     "@vercel/node": "^5.6.11",
     "@x402/core": "^2.6.0",
     "@x402/evm": "^2.6.0",
+    "@x402/extensions": "^2.6.0",
     "mcp-handler": "^1.0.7",
     "zod": "^3.25.0"
   },

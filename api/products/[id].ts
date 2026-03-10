@@ -1,12 +1,14 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
+import {
+  setCorsHeaders,
+  handleOptions,
+  gatePayment,
+  bazaarExtension,
+} from "../_x402.js";
 
-const WALLET = "0x61F2eF18ab0630912D24Fd0A30288619735AfFf5";
-const NETWORK = "eip155:8453";
-const FACILITATOR_URL = "https://x402.org/facilitator";
-
-// Full product catalogue — 115 gated products
+// Full product catalogue — 153 gated products
 const PRODUCTS: Record<string, { price: string; file: string }> = {
   // Doctrine ($4.99–$9.99)
   "HD-0001": { price: "9.99", file: "doctrine/fictional-character-sourcing.md" },
@@ -282,18 +284,24 @@ const PRODUCTS: Record<string, { price: string; file: string }> = {
   "BDL-005": { price: "399", file: "bundles/BDL-005-multi-agent-architect-collection.md" },
 };
 
-// USDC on Base has 6 decimals
-function priceToSmallestUnit(price: string): string {
-  const dollars = parseFloat(price);
-  return Math.round(dollars * 1_000_000).toString();
-}
+// Bazaar extension for product discovery
+const productBazaar = bazaarExtension({
+  method: "GET",
+  input: { product_id: "string — e.g. HD-0057, SP-001, CS-001" },
+  output: {
+    example: { content: "# Product Title\n\nMarkdown content..." },
+    schema: {
+      properties: {
+        content: { type: "string", description: "Full product content in Markdown" },
+      },
+      required: ["content"],
+    },
+  },
+});
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-PAYMENT, PAYMENT-SIGNATURE, Authorization");
-
-  if (req.method === "OPTIONS") return res.status(200).end();
+  setCorsHeaders(res);
+  if (handleOptions(req, res)) return;
 
   const { id } = req.query;
   const productId = Array.isArray(id) ? id[0] : id;
@@ -302,108 +310,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!product) {
     return res.status(404).json({
       error: "Product not found",
-      hint: "Use product IDs like HD-0200, HD-0057, etc.",
+      hint: "Use product IDs like HD-0057, SP-001, CS-001, etc.",
       catalogue: "https://hive-doctrine-mcp.vercel.app/mcp (browse_catalogue tool)",
     });
   }
 
-  // Check for payment header (v2 or v1)
-  const paymentHeader = req.headers["payment-signature"] || req.headers["x-payment"];
+  // x402 payment gate (CDP facilitator + Bazaar discovery)
+  const paid = await gatePayment(req, res, {
+    price: product.price,
+    resource: `/api/products/${productId}`,
+    description: `Purchase ${productId} — $${product.price} USDC`,
+    extensions: productBazaar,
+  });
 
-  if (!paymentHeader) {
-    // No payment — return 402 with x402 payment instructions
-    const paymentRequired = {
-      x402Version: 1,
-      accepts: [
-        {
-          scheme: "exact",
-          network: NETWORK,
-          maxAmountRequired: priceToSmallestUnit(product.price),
-          resource: `/api/products/${productId}`,
-          description: `Purchase ${productId} — $${product.price} USDC`,
-          payTo: WALLET,
-          asset: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", // USDC on Base mainnet
-          maxTimeoutSeconds: 300,
-        },
-      ],
-      error: "Payment required. Send USDC on Base via x402 protocol.",
-    };
+  if (!paid) return;
 
-    const encoded = Buffer.from(JSON.stringify(paymentRequired)).toString("base64");
-    res.setHeader("PAYMENT-REQUIRED", encoded);
+  // Payment verified — serve content
+  const filePath = join(process.cwd(), "gated-products", product.file);
 
-    return res.status(402).json(paymentRequired);
+  if (!existsSync(filePath)) {
+    return res.status(500).json({ error: "Product file not found on server" });
   }
 
-  // Payment header present — verify via facilitator
-  try {
-    const verifyResponse = await fetch(`${FACILITATOR_URL}/verify`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        payload: paymentHeader,
-        details: {
-          scheme: "exact",
-          network: NETWORK,
-          maxAmountRequired: priceToSmallestUnit(product.price),
-          resource: `/api/products/${productId}`,
-          payTo: WALLET,
-          asset: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-        },
-      }),
-    });
-
-    const verification = await verifyResponse.json();
-
-    if (!verification.isValid) {
-      return res.status(402).json({
-        error: "Payment verification failed",
-        reason: verification.invalidReason,
-        hint: "Ensure you sent the correct amount to the correct wallet on Base.",
-      });
-    }
-
-    // Payment verified — serve the content
-    const filePath = join(process.cwd(), "gated-products", product.file);
-
-    if (!existsSync(filePath)) {
-      return res.status(500).json({ error: "Product file not found on server" });
-    }
-
-    const content = readFileSync(filePath, "utf-8");
-
-    // Settle the payment
-    try {
-      const settleResponse = await fetch(`${FACILITATOR_URL}/settle`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          payload: paymentHeader,
-          details: {
-            scheme: "exact",
-            network: NETWORK,
-            maxAmountRequired: priceToSmallestUnit(product.price),
-            resource: `/api/products/${productId}`,
-            payTo: WALLET,
-            asset: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-          },
-        }),
-      });
-
-      const settlement = await settleResponse.json();
-      if (settlement.success) {
-        const paymentResponse = Buffer.from(JSON.stringify(settlement)).toString("base64");
-        res.setHeader("PAYMENT-RESPONSE", paymentResponse);
-      }
-    } catch {
-      // Settlement failure shouldn't block content delivery after verify passed
-      console.error("Settlement failed but content delivered");
-    }
-
-    res.setHeader("Content-Type", "text/markdown");
-    return res.status(200).send(content);
-  } catch (error) {
-    console.error("Payment verification error:", error);
-    return res.status(500).json({ error: "Payment verification service unavailable" });
-  }
+  const content = readFileSync(filePath, "utf-8");
+  res.setHeader("Content-Type", "text/markdown");
+  return res.status(200).send(content);
 }
