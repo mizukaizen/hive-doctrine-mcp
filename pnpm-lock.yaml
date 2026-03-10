@@ -17,6 +17,9 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: 1.25.2
         version: 1.25.2(hono@4.12.5)(zod@3.25.76)
+      '@upstash/vector':
+        specifier: ^1.2.0
+        version: 1.2.3
       '@vercel/node':
         specifier: ^5.6.11
         version: 5.6.11
@@ -32,6 +35,9 @@ importers:
       mcp-handler:
         specifier: ^1.0.7
         version: 1.0.7(@modelcontextprotocol/sdk@1.25.2(hono@4.12.5)(zod@3.25.76))(next@15.3.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
+      viem:
+        specifier: ^2.23.0
+        version: 2.47.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76)
       zod:
         specifier: ^3.25.0
         version: 3.25.76
@@ -1020,6 +1026,9 @@ packages:
 
   '@types/ws@8.18.1':
     resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
+
+  '@upstash/vector@1.2.3':
+    resolution: {integrity: sha512-yXsWKeuHNYyH72BcSZd3bV5ZD5MybAoTvKxkMaeV2UzuGfNzbHBVh5eO+ysTWTFAf8I9XcOueF4tZfAGjCa4Iw==}
 
   '@vercel/build-utils@13.6.3':
     resolution: {integrity: sha512-KOxkJ38uzZoxvto1fL6H2Vxm69vbbKgpY7vq07M1mVdRM9q2jXFN5Lo6bebtuH/kuv0cLZNXCE1r8aFmaTwpTg==}
@@ -3123,6 +3132,8 @@ snapshots:
   '@types/ws@8.18.1':
     dependencies:
       '@types/node': 22.13.10
+
+  '@upstash/vector@1.2.3': {}
 
   '@vercel/build-utils@13.6.3':
     dependencies:
